@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -40,10 +41,20 @@ func main() {
 	for scanner.Scan() {
 		word := scanner.Text()
 		finalURL := strings.Replace(*url, "FUZZ", word, 1)
-		fmt.Println("[TEST] URL:", finalURL)
+		// fmt.Println("[TEST] URL:", finalURL)
+		resp, err := http.Get(finalURL)
+		if err != nil {
+			fmt.Println("Error: ", err)
+			continue
+		}
+		fmt.Println(finalURL, resp.StatusCode)
+		defer resp.Body.Close()
 	}
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error while reading file:", err)
 	}
+
+	// send get request for every finalURL
+
 }

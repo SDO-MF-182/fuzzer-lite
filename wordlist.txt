@@ -2,3 +2,7 @@ admin
 guest
 pck
 test
+status
+health
+login
+debug
