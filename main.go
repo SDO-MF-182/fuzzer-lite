@@ -13,18 +13,16 @@ func main() {
 	// define CLI-Parameters
 	url := flag.String("url", "", "target-url with placeholder")
 	wordlist := flag.String("wordlist", "", "path to wordlist")
+	showall := flag.Bool("showall", false, "show all http-response-codes")
 
 	// flags parsen
 	flag.Parse()
 
 	// error handling
 	if *url == "" || *wordlist == "" {
-		fmt.Println("[MISSING OPTIONS]...go run . -url https://example.com/api/FUZZ -wordlist wordlist.txt")
+		fmt.Println("[MISSING OPTIONS]...go run . -url https://example.com/FUZZ -wordlist wordlist.txt")
 		return
 	}
-
-	fmt.Println("[WORDLIST] ", *wordlist)
-	fmt.Println("[URL] ", *url)
 
 	fmt.Println("[+]...loading up fuzzer-lite")
 
@@ -42,19 +40,22 @@ func main() {
 		word := scanner.Text()
 		finalURL := strings.Replace(*url, "FUZZ", word, 1)
 		// fmt.Println("[TEST] URL:", finalURL)
+		// send get request for every finalURL
 		resp, err := http.Get(finalURL)
 		if err != nil {
 			fmt.Println("Error: ", err)
 			continue
 		}
-		fmt.Println(finalURL, resp.StatusCode)
-		defer resp.Body.Close()
+		if *showall || resp.StatusCode == 200 {
+			fmt.Printf("[%d] %s\n", resp.StatusCode, finalURL)
+		} //else {
+		//fmt.Println("No endpoint at: ", finalURL)
+		//}
+		// fmt.Println(finalURL, resp.StatusCode)
+		resp.Body.Close()
 	}
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error while reading file:", err)
 	}
-
-	// send get request for every finalURL
-
 }
