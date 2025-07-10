@@ -46,9 +46,17 @@ func main() {
 			fmt.Println("Error: ", err)
 			continue
 		}
-		if *showall || resp.StatusCode == 200 {
-			fmt.Printf("[%d] %q\n", resp.StatusCode, finalURL)
+		switch resp.StatusCode {
+		case 200:
+			fmt.Printf("[200] FOUND:		%s\n", finalURL)
+		case 403:
+			fmt.Printf("[403] FORBIDDEN:	%s\n", finalURL)
+		default:
+			if *showall {
+				fmt.Printf("[%d] %s\n", resp.StatusCode, finalURL)
+			}
 		}
+
 		resp.Body.Close()
 	}
 
