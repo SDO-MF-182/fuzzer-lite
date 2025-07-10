@@ -16,6 +16,11 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(f"Path: {self.path} => Status: {status}".encode())
 
+    def do_POST(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        raw_body = self.rfile.read(content_length)
+        body = raw_body.decode()
+
     def log_message(self, format, *args):
         return  # disable logging to stdout
 

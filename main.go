@@ -47,11 +47,8 @@ func main() {
 			continue
 		}
 		if *showall || resp.StatusCode == 200 {
-			fmt.Printf("[%d] %s\n", resp.StatusCode, finalURL)
-		} //else {
-		//fmt.Println("No endpoint at: ", finalURL)
-		//}
-		// fmt.Println(finalURL, resp.StatusCode)
+			fmt.Printf("[%d] %q\n", resp.StatusCode, finalURL)
+		}
 		resp.Body.Close()
 	}
 
